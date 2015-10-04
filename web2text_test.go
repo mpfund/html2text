@@ -1,37 +1,36 @@
 package web2text
 
 import (
-	"fmt"
 	//"io/ioutil"
 	//"net/http"
 	"testing"
 )
 
-func checkerr (err error){
+func checkerr(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
 
-func TestHtml2TextSkipTags(t *testing.T){
+func TestHtml2TextSkipTags(t *testing.T) {
 	conf := NewSettings()
 	conf.IncludeLinkUrls = false
-	
-	text, err := Html2Text("q<script>ddgft</script>mm",conf)
+
+	text, err := Html2Text("q<script>ddgft</script>mm", conf)
 	checkerr(err)
-	if text != "q mm"{
+	if text != "q mm" {
 		t.Fail()
 	}
 }
 
-func TestHtml2TextLinks(t *testing.T){
+func TestHtml2TextLinks(t *testing.T) {
 	conf := NewSettings()
 	conf.IncludeLinkUrls = true
-	
-	text, err := Html2Text("mm <a href=\"https://test/\">Test</a>",conf)
+
+	text, err := Html2Text("mm <a href=\"https://test/\">Test</a>", conf)
 	checkerr(err)
-	
-	if text != `mm Test (https://test/) `{
+
+	if text != `mm Test (https://test/) ` {
 		t.Fail()
 	}
 }

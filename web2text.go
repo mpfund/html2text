@@ -6,37 +6,37 @@ import (
 	"io"
 )
 
-func DefaultSkipTags()map[string]bool{
+func DefaultSkipTags() map[string]bool {
 	k := make(map[string]bool)
-	k["script"]=true
-	k["link"]=true
-	k["meta"]=true
-	k["style"]=true
+	k["script"] = true
+	k["link"] = true
+	k["meta"] = true
+	k["style"] = true
 	return k
 }
 
-func NewSettings() TexterSettings{
+func NewSettings() TexterSettings {
 	conf := TexterSettings{}
 	conf.SkipTags = DefaultSkipTags()
 	conf.IncludeLinkUrls = true
 	return conf
 }
 
-type TexterSettings struct{
-	SkipTags map[string]bool
+type TexterSettings struct {
+	SkipTags        map[string]bool
 	IncludeLinkUrls bool
 }
 
-func  Html2Text(html string, conf TexterSettings) (string, error) {
+func Html2Text(html string, conf TexterSettings) (string, error) {
 	buffer := bytes.NewBuffer([]byte(html))
-	return Html2TextFromReader(buffer,conf)
+	return Html2TextFromReader(buffer, conf)
 }
 
-func  Html2TextFromReader(r io.Reader, conf TexterSettings) (string, error) {
+func Html2TextFromReader(r io.Reader, conf TexterSettings) (string, error) {
 	d := html.NewTokenizer(r)
 
 	lastToken := html.Token{}
-	text := ""
+	buffer := bytes.Buffer{}
 	textAdded := false
 
 	for {
@@ -53,19 +53,19 @@ func  Html2TextFromReader(r io.Reader, conf TexterSettings) (string, error) {
 		token := d.Token()
 
 		if isTextTag(token) {
-			if isStartTag(lastToken) || lastToken.Data== "" {
-				_,ok := conf.SkipTags[lastToken.Data]
+			if isStartTag(lastToken) || lastToken.Data == "" {
+				_, ok := conf.SkipTags[lastToken.Data]
 				if !ok {
-					if conf.IncludeLinkUrls && isTagName(lastToken,"a"){
-						text += token.Data + " (" + getHrefUrl(lastToken) + ")"
-					}else{
-						text += token.Data
+					if conf.IncludeLinkUrls && isTagName(lastToken, "a") {
+						buffer.WriteString(token.Data + " (" + getHrefUrl(lastToken) + ")")
+					} else {
+						buffer.WriteString(token.Data)
 					}
 					textAdded = true
 				}
 			}
-			if isEndTag(lastToken){
-				text +=token.Data
+			if isEndTag(lastToken) {
+				buffer.WriteString(token.Data)
 				textAdded = true
 			}
 		}
@@ -73,33 +73,33 @@ func  Html2TextFromReader(r io.Reader, conf TexterSettings) (string, error) {
 		if isEndTag(token) && textAdded {
 			textAdded = false
 			if isTagName(token, "p") {
-				text += "\n"
+				buffer.WriteString("\n")
 			} else {
-				text += " "
+				buffer.WriteString(" ")
 			}
 		}
 
 		if isTagName(token, "br") {
-			text += "\n"
+			buffer.WriteString("\n")
 		}
 
 		if isStartTag(token) && isTagName(token, "p") {
-			text += "\n"
+			buffer.WriteString("\n")
 		}
 
 		lastToken = token
 	}
 
-	return text, nil
+	return buffer.String(), nil
 }
 
-func getHrefUrl(token html.Token)string{
-	if isStartTag(token) && isTagName(token,"a"){
-		for _,i := range token.Attr{
-			if (i.Key=="href"){
+func getHrefUrl(token html.Token) string {
+	if isStartTag(token) && isTagName(token, "a") {
+		for _, i := range token.Attr {
+			if i.Key == "href" {
 				return i.Val
 			}
-		}	
+		}
 	}
 	return ""
 }
