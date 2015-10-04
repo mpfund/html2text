@@ -1,9 +1,9 @@
 package web2text
 
 import (
-	"io/ioutil"
-	"net/http"
 	"fmt"
+	//"io/ioutil"
+	//"net/http"
 	"testing"
 )
 
@@ -15,19 +15,28 @@ func checkerr (err error){
 
 func TestHtml2TextSkipTags(t *testing.T){
 	conf := NewSettings()
-	str, err := Html2Text("q<script>ddgft</script>mm",conf)
+	conf.IncludeLinkUrls = false
+	
+	text, err := Html2Text("q<script>ddgft</script>mm",conf)
 	checkerr(err)
-	fmt.Println(str)
+	if text != "q mm"{
+		t.Fail()
+	}
 }
 
 func TestHtml2TextLinks(t *testing.T){
 	conf := NewSettings()
 	conf.IncludeLinkUrls = true
-	str, err := Html2Text("mm <a href=\"https://test/\">Test</a>",conf)
+	
+	text, err := Html2Text("mm <a href=\"https://test/\">Test</a>",conf)
 	checkerr(err)
-	fmt.Println(str)
+	
+	if text != `mm Test (https://test/) `{
+		t.Fail()
+	}
 }
 
+/*
 func TestHtml2TextGoogle(t *testing.T) {
 	resp, err := http.Get("https://www.reddit.com/r/golang/")
 	checkerr(err)
@@ -37,4 +46,4 @@ func TestHtml2TextGoogle(t *testing.T) {
 	str, err := Html2Text(string(c),conf)
 	checkerr(err)
 	fmt.Println(str)
-}
+}*/
