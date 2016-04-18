@@ -1,4 +1,4 @@
-package web2text
+package html2text
 
 import (
 	//"io/ioutil"
