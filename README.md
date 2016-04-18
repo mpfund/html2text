@@ -1,7 +1,7 @@
-# Web2Text
+# Html2Text
 
 # htmlcheck
-converts html 2 text
+converts html to text
 
 Install
 ```
