@@ -14,14 +14,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/BlackEspresso/web2text"
+	"github.com/BlackEspresso/html2text"
 )
 
 func main() {
 	htmlText := `<div>Link:</div> <a href="https://www.google.com">google</a>`
 
-	conf := web2text.NewSettings()
-	text, err := web2text.Html2Text(htmlText, conf)
+	conf := html2text.NewSettings()
+	text, err := html2text.Html2Text(htmlText, conf)
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +44,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"fmt"
-	"github.com/BlackEspresso/web2text"
+	"github.com/BlackEspresso/html2text"
 )
 
 func main() {
@@ -54,9 +54,9 @@ func main() {
 	content, err := ioutil.ReadAll(resp.Body)
 	checkerr(err)
 	
-	conf := web2text.NewSettings()
+	conf := html2text.NewSettings()
 	conf.IncludeLinkUrls = false
-	text, err := web2text.Html2Text(string(content), conf)
+	text, err := html2text.Html2Text(string(content), conf)
 	checkerr(err)
 	
 	fmt.Println(text)
