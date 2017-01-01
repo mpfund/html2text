@@ -2,8 +2,9 @@ package web2text
 
 import (
 	"bytes"
-	"golang.org/x/net/html"
 	"io"
+
+	"golang.org/x/net/html"
 )
 
 func DefaultSkipTags() map[string]bool {
@@ -12,6 +13,7 @@ func DefaultSkipTags() map[string]bool {
 	k["link"] = true
 	k["meta"] = true
 	k["style"] = true
+	k["noscript"] = true
 	return k
 }
 
@@ -27,12 +29,12 @@ type TexterSettings struct {
 	IncludeLinkUrls bool
 }
 
-func Html2Text(html string, conf TexterSettings) (string, error) {
+func Html2Text(html string, conf *TexterSettings) (string, error) {
 	buffer := bytes.NewBuffer([]byte(html))
 	return Html2TextFromReader(buffer, conf)
 }
 
-func Html2TextFromReader(r io.Reader, conf TexterSettings) (string, error) {
+func Html2TextFromReader(r io.Reader, conf *TexterSettings) (string, error) {
 	d := html.NewTokenizer(r)
 
 	lastToken := html.Token{}
