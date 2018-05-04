@@ -17,7 +17,7 @@ func DefaultSkipTags() map[string]bool {
 	return k
 }
 
-func NewSettings() TexterSettings {
+func NewSettings() *TexterSettings {
 	conf := TexterSettings{}
 	conf.SkipTags = DefaultSkipTags()
 	conf.IncludeLinkUrls = true
