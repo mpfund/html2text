@@ -21,7 +21,7 @@ func NewSettings() TexterSettings {
 	conf := TexterSettings{}
 	conf.SkipTags = DefaultSkipTags()
 	conf.IncludeLinkUrls = true
-	return conf
+	return &conf
 }
 
 type TexterSettings struct {
